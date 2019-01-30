@@ -1,9 +1,11 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <ul v-for="(o,i) in board" v-bind:key="i">
-        <li>{{o}}</li>
-    </ul>
+    <table>
+      <tr v-for="r in sRange" >
+        <td v-for="c in sRange" >{{getCell(r,c)}}</td>
+      </tr>
+    </table>
   </div>
 </template>
 
@@ -162,7 +164,14 @@ export default {
   data () {
     return {
       msg: 'flood',
-      board: Object.keys(rBoard())
+      board: rBoard(),
+      sRange
+    }
+  },
+  methods: {
+    //getCell: (x,y) => this.board[[x,y]]
+    getCell: function (x,y)  {
+      return this.board[[x,y]]
     }
   }
 }
