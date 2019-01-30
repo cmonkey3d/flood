@@ -2,8 +2,25 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <table>
-      <tr v-for="r in sRange" >
-        <td v-for="c in sRange" >{{getCell(r,c)}}</td>
+      <tr>
+        <td>
+          <table>
+            <tr v-for="r in sRange" >
+              <td v-for="c in sRange" :style="{'background-color':getColor(r,c)}"> 
+                {{getCell(r,c)}}
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td>
+          <table>
+            <tr v-for="r in sRange" >
+              <td v-for="c in sRange" :style="{'background-color':getColor(r,c)}"> 
+                {{getCell(r,c)}}
+              </td>
+            </tr>
+          </table>
+        </td>
       </tr>
     </table>
   </div>
@@ -18,7 +35,7 @@ const sRange=range(side)
 const corners=[[-1,-1],[side,side],[-1,side],[side,-1]]
 const outside=sRange.reduce((a,c)=>[...a,[c,-1],[c,side],[-1,c],[side,c]],corners)
 const inside=sRange.reduce((a,c)=>[...a,...sRange.map(d=>[c,d])],[])
-const colors=['a','b','c','d','2','f']
+const colors=['r','o','y','g','b','p']
 const rndEl=e=>e[Math.trunc(Math.random()*e.length)]
 const rBoard = ()=>outside.reduce((a,c)=>{a[c]='x';return a},inside.reduce((a,c)=>{a[c]=rndEl(colors);return a;},{}))
 const boardRow=(b,r)=>sRange.map(c=>b.guts[[c,r]]?'.':b.brd[[c,r]]).join('')
@@ -172,7 +189,16 @@ export default {
     //getCell: (x,y) => this.board[[x,y]]
     getCell: function (x,y)  {
       return this.board[[x,y]]
-    }
+    },
+    getColor: function (x,y) {
+      const ret={'r':'HotPink',
+                 'o':'LightSalmon',
+                 'y':'yellow',
+                 'g':'SpringGreen',
+                 'b':'SkyBlue',
+                 'p':'Plum'}
+      return ret[this.board[[x,y]]]
+    },
   }
 }
 </script>
@@ -193,4 +219,11 @@ li {
 a {
   color: #42b983;
 }
+
+#bgRed { background-color: red;}
+#bgOrange {background-color: orange;}
+#bgYellow {background-color: yellow;}
+#bgGreen {background-color: green;}
+#bgBlue {background-color: blue;}
+#bgPurple {background-color:purple;}
 </style>
