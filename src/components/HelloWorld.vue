@@ -3,7 +3,7 @@
     <h1>{{ msg }}</h1>
     <table>
       <tr>
-        <td>
+        <td style="padding: 20px">
           <table>
             <tr v-for="r in sRange" >
               <td v-for="c in sRange" :style="{'background-color':getColor(r,c)}"> 
@@ -12,7 +12,7 @@
             </tr>
           </table>
         </td>
-        <td>
+        <td style="padding: 20px">
           <table>
             <tr v-for="r in sRange" >
               <td v-for="c in sRange" :style="{'background-color':getColor(r,c)}"> 
@@ -59,7 +59,7 @@ function flood(b,x,y) {
           return
        } 
        inset[loc]=true
-       for (d of dirs) inFlood(x+d[0],y+d[1])
+       for (let d of dirs) inFlood(x+d[0],y+d[1])
     }
     inFlood(x,y)
     return {
@@ -181,24 +181,32 @@ export default {
   data () {
     return {
       msg: 'flood',
-      board: rBoard(),
-      sRange
+      sRange,
+      human: rBoard(),
+      comp: rBoard()
     }
   },
   methods: {
     //getCell: (x,y) => this.board[[x,y]]
     getCell: function (x,y)  {
-      return this.board[[x,y]]
+      let loc=[x,y]
+      //return this.human.guts[loc]?'.':this.human.brd[[x,y]]
+      return this.human[[x,y]]
     },
     getColor: function (x,y) {
+      let loc=[x,y]
       const ret={'r':'HotPink',
                  'o':'LightSalmon',
                  'y':'yellow',
                  'g':'SpringGreen',
                  'b':'SkyBlue',
                  'p':'Plum'}
-      return ret[this.board[[x,y]]]
+      //return this.human.guts[loc]?'White':ret[this.human.brd[[x,y]]]
+      return ret[this.human[[x,y]]]
     },
+  },
+  mounted() {
+    this.comp=initFloodState(this.human)
   }
 }
 </script>
@@ -220,10 +228,4 @@ a {
   color: #42b983;
 }
 
-#bgRed { background-color: red;}
-#bgOrange {background-color: orange;}
-#bgYellow {background-color: yellow;}
-#bgGreen {background-color: green;}
-#bgBlue {background-color: blue;}
-#bgPurple {background-color:purple;}
 </style>
