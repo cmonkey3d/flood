@@ -6,7 +6,7 @@
         <td style="padding: 20px">
           <table>
             <tr v-for="r in sRange" >
-              <td v-for="c in sRange" :style="{'background-color':getColor(r,c)}"> 
+              <td v-for="c in sRange" v-on:click="doClick(r,c)":style="{'background-color':getColor(r,c)}"> 
                 {{getCell(r,c)}}
               </td>
             </tr>
@@ -188,13 +188,13 @@ export default {
   },
   methods: {
     //getCell: (x,y) => this.board[[x,y]]
-    getCell: function (x,y)  {
-      let loc=[x,y]
+    getCell: function (r,c)  {
+      let loc=[r,c]
       //return this.human.guts[loc]?'.':this.human.brd[[x,y]]
-      return this.human[[x,y]]
+      return this.human[[r,c]]
     },
-    getColor: function (x,y) {
-      let loc=[x,y]
+    getColor: function (r,c) {
+      let loc=[r,c]
       const ret={'r':'DeepPink',
                  'o':'LightSalmon',
                  'y':'yellow',
@@ -202,8 +202,11 @@ export default {
                  'b':'SlateBlue',
                  'p':'Plum'}
       //return this.human.guts[loc]?'White':ret[this.human.brd[[x,y]]]
-      return ret[this.human[[x,y]]]
+      return ret[this.human[[r,c]]]
     },
+    doClick(r,c) {
+      console.log('row',r,'col',c,this.getColor(r,c))
+    }
   },
   mounted() {
     this.comp=initFloodState(this.human)
