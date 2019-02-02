@@ -182,35 +182,42 @@ export default {
     return {
       msg: 'flood',
       sRange,
-      human: rBoard(),
-      comp: rBoard()
+      human: {},
+      comp: {} 
     }
   },
   methods: {
     //getCell: (x,y) => this.board[[x,y]]
     getCell: function (r,c)  {
       let loc=[r,c]
-      //return this.human.guts[loc]?'.':this.human.brd[[x,y]]
-      return this.human[[r,c]]
+      return this.human.guts[loc]?'_':this.human.brd[loc]
+      //return this.human.brd[loc]
     },
     getColor: function (r,c) {
       let loc=[r,c]
+      console.log('getColor',loc,this.human.brd[loc])
       const ret={'r':'DeepPink',
                  'o':'LightSalmon',
                  'y':'yellow',
                  'g':'SpringGreen',
                  'b':'SlateBlue',
-                 'p':'Plum'}
-      //return this.human.guts[loc]?'White':ret[this.human.brd[[x,y]]]
-      return ret[this.human[[r,c]]]
+                 'p':'Plum',
+                 }
+      return this.human.guts[loc]?'White':ret[this.human.brd[loc]]
+      //return ret[this.human.brd[loc]]
     },
     doClick(r,c) {
+      let loc=[r,c]
       console.log('row',r,'col',c,this.getColor(r,c))
+      if (this.human.skin[loc]) {
+        this.human=fill(this.human,this.human.brd[loc])
+      }
     }
   },
   mounted() {
-    this.comp=initFloodState(this.human)
-    console.log(solve(this.comp))
+    let rb=rBoard()
+    this.comp=initFloodState(rb)
+    this.human=initFloodState(rb)
   }
 }
 </script>
