@@ -7,7 +7,7 @@
         <td style="padding: 20px">
           <table>
             <tr v-for="r in sRange" >
-              <td v-for="c in sRange" v-on:click="doClick(r,c)":style="{'background-color':getColor(human,r,c),'width':'20px'}"> 
+              <td v-for="c in sRange" v-on:mouseover="showDistMap(r,c)" v-on:click="doClick(r,c)":style="{'background-color':getColor(human,r,c),'width':'20px'}"> 
                 {{getCell(human,r,c)}}
               </td>
             </tr>
@@ -186,22 +186,21 @@ export default {
       human: {},
       comp: {} ,
       movect: 0,
+      dmap:{},
       headStart:3,
       solution:[]
     }
   },
   methods: {
-    //getCell: (x,y) => this.board[[x,y]]
     getCell: function (grid,r,c)  {
       if (!grid || !grid.guts) return '_'
       let loc=[r,c]
+      if (this.dmap[loc] && grid==this.human) return this.dmap[loc].toString()
       return grid.guts[loc]?'_':grid.brd[loc]
-      //return this.human.brd[loc]
     },
     getColor: function (grid,r,c) {
       if (!grid || !grid.guts) return 'White'
       let loc=[r,c]
-      //console.log('getColor',loc,grid.brd[loc])
       const ret={'r':'DeepPink',
                  'o':'LightSalmon',
                  'y':'yellow',
@@ -210,17 +209,27 @@ export default {
                  'p':'Plum',
                  }
       return grid.guts[loc]?'White':ret[grid.brd[loc]]
-      //return ret[this.human.brd[loc]]
     },
     doClick(r,c) {
       let loc=[r,c]
       if (this.human.skin[loc]) {
         this.human=fill(this.human,this.human.brd[loc])
+        this.dmap={}
         let compmove=this.movect-this.headStart
         if (compmove>=0 && compmove<this.solution.length) {
            this.comp=fill(this.comp,this.solution[compmove])
         }
         this.movect++
+      }
+    },
+    showDistMap(r,c) {
+      let loc=[r,c]
+      if (this.human.skin) {
+        if (this.human.skin[loc]) {
+          this.dmap=distMap(fill(this.human,this.human.brd[loc]))
+        } else {
+          this.dmap={}
+        }
       }
     }
   },
