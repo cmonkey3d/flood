@@ -6,7 +6,7 @@
         <td style="padding: 20px">
           <table>
             <tr v-for="r in sRange" >
-              <td v-for="c in sRange" v-on:click="doClick(r,c)":style="{'background-color':getColor(human,r,c)}"> 
+              <td v-for="c in sRange" v-on:click="doClick(r,c)":style="{'background-color':getColor(human,r,c),'width':'20px'}"> 
                 {{getCell(human,r,c)}}
               </td>
             </tr>
@@ -15,7 +15,7 @@
         <td style="padding: 20px">
           <table>
             <tr v-for="r in sRange" >
-              <td v-for="c in sRange" :style="{'background-color':getColor(comp,r,c)}"> 
+              <td v-for="c in sRange" :style="{'background-color':getColor(comp,r,c),'width':'20px'}"> 
                 {{getCell(comp,r,c)}}
               </td>
             </tr>
