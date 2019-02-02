@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
+    <h1>{{ movect }}</h1>
     <table>
       <tr>
         <td style="padding: 20px">
