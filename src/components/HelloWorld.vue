@@ -1,6 +1,7 @@
 <template>
   <div class="hello">
     <h1>{{ movect }}</h1>
+    <h2><vue-slider v-bind="headstart"</h2>
     <table>
       <tr>
         <td style="padding: 20px">
@@ -185,6 +186,7 @@ export default {
       human: {},
       comp: {} ,
       movect: 0,
+      headStart:3,
       solution:[]
     }
   },
@@ -212,13 +214,13 @@ export default {
     },
     doClick(r,c) {
       let loc=[r,c]
-      console.log('row',r,'col',c,this.getColor(this.human,r,c))
       if (this.human.skin[loc]) {
         this.human=fill(this.human,this.human.brd[loc])
-        if (this.movect<this.solution.length) {
-           this.comp=fill(this.comp,this.solution[this.movect])
-           this.movect++
+        let compmove=this.movect-this.headStart
+        if (compmove>=0 && compmove<this.solution.length) {
+           this.comp=fill(this.comp,this.solution[compmove])
         }
+        this.movect++
       }
     }
   },
