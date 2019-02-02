@@ -126,7 +126,7 @@ function distMap(brd) {
 const colorDist=(b,dm=distMap(b))=>colors.map(c=>inside.filter(i=>!b.guts[i] && b.brd[i]==c).reduce((a,c)=>dm[c]>a?dm[c]:a,0))
 
 function solve(fs) {
-    let q=new TinyQueue([{fs,moves:[],est:20,cm:colorDist(fs)}],(a,b)=>(a.moves.length+a.est)-(b.moves.length+b.est))
+    let q=new TinyQueue.default([{fs,moves:[],est:20,cm:colorDist(fs)}],(a,b)=>(a.moves.length+a.est)-(b.moves.length+b.est))
     let startDist=colorDist(fs,distMap(fs)).reduce((a,c)=>a+=c,0)
     let visited={}
     let best=[]
@@ -195,11 +195,11 @@ export default {
     },
     getColor: function (x,y) {
       let loc=[x,y]
-      const ret={'r':'HotPink',
+      const ret={'r':'DeepPink',
                  'o':'LightSalmon',
                  'y':'yellow',
                  'g':'SpringGreen',
-                 'b':'SkyBlue',
+                 'b':'SlateBlue',
                  'p':'Plum'}
       //return this.human.guts[loc]?'White':ret[this.human.brd[[x,y]]]
       return ret[this.human[[x,y]]]
@@ -207,6 +207,7 @@ export default {
   },
   mounted() {
     this.comp=initFloodState(this.human)
+    console.log(solve(this.comp))
   }
 }
 </script>
