@@ -183,19 +183,23 @@ export default {
       msg: 'flood',
       sRange,
       human: {},
-      comp: {} 
+      comp: {} ,
+      movect: 0,
+      solution:[]
     }
   },
   methods: {
     //getCell: (x,y) => this.board[[x,y]]
     getCell: function (grid,r,c)  {
+      if (!grid || !grid.guts) return '_'
       let loc=[r,c]
       return grid.guts[loc]?'_':grid.brd[loc]
       //return this.human.brd[loc]
     },
     getColor: function (grid,r,c) {
+      if (!grid || !grid.guts) return 'White'
       let loc=[r,c]
-      console.log('getColor',loc,grid.brd[loc])
+      //console.log('getColor',loc,grid.brd[loc])
       const ret={'r':'DeepPink',
                  'o':'LightSalmon',
                  'y':'yellow',
@@ -211,6 +215,10 @@ export default {
       console.log('row',r,'col',c,this.getColor(this.human,r,c))
       if (this.human.skin[loc]) {
         this.human=fill(this.human,this.human.brd[loc])
+        if (this.movect<this.solution.length) {
+           this.comp=fill(this.comp,this.solution[this.movect])
+           this.movect++
+        }
       }
     }
   },
@@ -218,6 +226,8 @@ export default {
     let rb=rBoard()
     this.comp=initFloodState(rb)
     this.human=initFloodState(rb)
+    this.solution=solve(this.comp)
+    this.movect=0
   }
 }
 </script>
