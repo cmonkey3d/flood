@@ -6,8 +6,8 @@
         <td style="padding: 20px">
           <table>
             <tr v-for="r in sRange" >
-              <td v-for="c in sRange" v-on:click="doClick(r,c)":style="{'background-color':getColor(r,c)}"> 
-                {{getCell(r,c)}}
+              <td v-for="c in sRange" v-on:click="doClick(r,c)":style="{'background-color':getColor(human,r,c)}"> 
+                {{getCell(human,r,c)}}
               </td>
             </tr>
           </table>
@@ -15,8 +15,8 @@
         <td style="padding: 20px">
           <table>
             <tr v-for="r in sRange" >
-              <td v-for="c in sRange" :style="{'background-color':getColor(r,c)}"> 
-                {{getCell(r,c)}}
+              <td v-for="c in sRange" :style="{'background-color':getColor(comp,r,c)}"> 
+                {{getCell(comp,r,c)}}
               </td>
             </tr>
           </table>
@@ -188,14 +188,14 @@ export default {
   },
   methods: {
     //getCell: (x,y) => this.board[[x,y]]
-    getCell: function (r,c)  {
+    getCell: function (grid,r,c)  {
       let loc=[r,c]
-      return this.human.guts[loc]?'_':this.human.brd[loc]
+      return grid.guts[loc]?'_':grid.brd[loc]
       //return this.human.brd[loc]
     },
-    getColor: function (r,c) {
+    getColor: function (grid,r,c) {
       let loc=[r,c]
-      console.log('getColor',loc,this.human.brd[loc])
+      console.log('getColor',loc,grid.brd[loc])
       const ret={'r':'DeepPink',
                  'o':'LightSalmon',
                  'y':'yellow',
@@ -203,12 +203,12 @@ export default {
                  'b':'SlateBlue',
                  'p':'Plum',
                  }
-      return this.human.guts[loc]?'White':ret[this.human.brd[loc]]
+      return grid.guts[loc]?'White':ret[grid.brd[loc]]
       //return ret[this.human.brd[loc]]
     },
     doClick(r,c) {
       let loc=[r,c]
-      console.log('row',r,'col',c,this.getColor(r,c))
+      console.log('row',r,'col',c,this.getColor(this.human,r,c))
       if (this.human.skin[loc]) {
         this.human=fill(this.human,this.human.brd[loc])
       }
