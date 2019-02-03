@@ -4,10 +4,13 @@
     <table>
       <tr>
         <td >
-          <div>
+          <div v-if="movect==0">
             HeadStart
             <multiselect v-model="headStart" :options="headStartOpts"></multiselect>
           </div>
+        </td>
+        <td>
+          DistMap:<input type="checkbox" v-model="distMapEnb"> Totals:<input type="checkbox" v-model="totEnb">
         </td>
       <tr>
       <tr>
@@ -201,7 +204,9 @@ export default {
       hint:'',
       headStart:3,
       headStartOpts:range(6),
-      solution:[]
+      solution:[],
+      distMapEnb:false,
+      totEnb:false
     }
   },
   methods: {
@@ -229,7 +234,7 @@ export default {
         this.human=fill(this.human,this.human.brd[loc])
         this.dmap={}
         this.hint=''
-        let compmove=this.movect-3//-this.headStart
+        let compmove=this.movect-this.headStart
         if (compmove>=0 && compmove<this.solution.length) {
            this.comp=fill(this.comp,this.solution[compmove])
         }
@@ -241,10 +246,15 @@ export default {
       if (this.human.skin) {
         if (this.human.skin[loc]) {
           let tb=fill(this.human,this.human.brd[loc])
-          this.dmap=distMap(tb)
+          if (this.distMapEnb) {
+            this.dmap=distMap(tb)
+          }
           let cd=colorDist(tb,this.dmap)
-          //this.hint=')'+cd.join('+')+'='+cd.reduce((a,c)=>a+c,0)
-          this.hint=''
+          if (this.totEnb) {
+            this.hint=')'+cd.join('+')+'='+cd.reduce((a,c)=>a+c,0)
+          } else {
+            this.hint=''
+          }
         } else {
           this.dmap={}
           this.hint=''
