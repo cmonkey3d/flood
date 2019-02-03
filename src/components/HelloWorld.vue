@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h1>{{ movect }}</h1>
+    <h1>{{ movect }} {{ hint }}</h1>
     <h2><vue-slider v-bind="headstart"</h2>
     <table>
       <tr>
@@ -158,9 +158,9 @@ function solve(fs) {
                     moves:[...b.moves,m],
                     cm
                  } )
-              }
-           } 
-         }
+            }
+          } 
+        }
     }
     console.log('evaluated ',Object.keys(visited).length,best.length)
     return best
@@ -187,6 +187,7 @@ export default {
       comp: {} ,
       movect: 0,
       dmap:{},
+      hint:'',
       headStart:3,
       solution:[]
     }
@@ -215,6 +216,7 @@ export default {
       if (this.human.skin[loc]) {
         this.human=fill(this.human,this.human.brd[loc])
         this.dmap={}
+        this.hint=''
         let compmove=this.movect-this.headStart
         if (compmove>=0 && compmove<this.solution.length) {
            this.comp=fill(this.comp,this.solution[compmove])
@@ -226,9 +228,14 @@ export default {
       let loc=[r,c]
       if (this.human.skin) {
         if (this.human.skin[loc]) {
-          this.dmap=distMap(fill(this.human,this.human.brd[loc]))
+          let tb=fill(this.human,this.human.brd[loc])
+          this.dmap=distMap(tb)
+          let cd=colorDist(tb,this.dmap)
+          //this.hint=')'+cd.join('+')+'='+cd.reduce((a,c)=>a+c,0)
+          this.hint=''
         } else {
           this.dmap={}
+          this.hint=''
         }
       }
     }
