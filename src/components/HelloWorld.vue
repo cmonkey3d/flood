@@ -3,6 +3,14 @@
     <h1>{{ movect }} {{ hint }}</h1>
     <table>
       <tr>
+        <td >
+          <div>
+            HeadStart
+            <multiselect v-model="headStart" :options="headStartOpts"></multiselect>
+          </div>
+        </td>
+      <tr>
+      <tr>
         <td style="padding: 20px">
           <table>
             <tr v-for="r in sRange" >
@@ -176,8 +184,12 @@ function clear(b) {
 
 // end splice
 
+import Multiselect from 'vue-multiselect'
+
+
 export default {
   name: 'HelloWorld',
+  components: { Multiselect },
   data () {
     return {
       msg: 'flood',
@@ -188,6 +200,7 @@ export default {
       dmap:{},
       hint:'',
       headStart:3,
+      headStartOpts:range(6),
       solution:[]
     }
   },
@@ -216,7 +229,7 @@ export default {
         this.human=fill(this.human,this.human.brd[loc])
         this.dmap={}
         this.hint=''
-        let compmove=this.movect-this.headStart
+        let compmove=this.movect-3//-this.headStart
         if (compmove>=0 && compmove<this.solution.length) {
            this.comp=fill(this.comp,this.solution[compmove])
         }
@@ -250,6 +263,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style scoped>
 h1, h2 {
   font-weight: normal;

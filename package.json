@@ -12,6 +12,7 @@
   "dependencies": {
     "tinyqueue": "^2.0.0",
     "vue": "^2.5.2",
+    "vue-multiselect": "^2.1.3",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
