@@ -1,7 +1,6 @@
 <template>
   <div class="hello">
     <h1>{{ movect }} {{ hint }}</h1>
-    <h2><vue-slider v-bind="headstart"</h2>
     <table>
       <tr>
         <td style="padding: 20px">
