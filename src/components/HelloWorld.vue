@@ -213,7 +213,8 @@ export default {
     getCell: function (grid,r,c)  {
       if (!grid || !grid.guts) return '_'
       let loc=[r,c]
-      if (this.dmap[loc] && grid==this.human) return this.dmap[loc].toString()
+      //if (this.dmap[loc] && grid==this.human) return this.dmap[loc].toString()
+      if (this.dmap[loc] && grid==this.human) return this.dmap[loc].toString(16)
       return grid.guts[loc]?'_':grid.brd[loc]
     },
     getColor: function (grid,r,c) {
