@@ -226,17 +226,23 @@ export default {
                  'b':'SlateBlue',
                  'p':'Plum',
                  }
+      //return grid.guts[loc]?ret[grid.lastColor]:ret[grid.brd[loc]]
       return grid.guts[loc]?'White':ret[grid.brd[loc]]
+    },
+    fillPlus(grid,color) {
+      let ret=fill(grid,color)
+      ret.lastColor=color
+      return ret
     },
     doClick(r,c) {
       let loc=[r,c]
       if (this.human.skin[loc]) {
-        this.human=fill(this.human,this.human.brd[loc])
+        this.human=this.fillPlus(this.human,this.human.brd[loc])
         this.dmap={}
         this.hint=''
         let compmove=this.movect-this.headStart
         if (compmove>=0 && compmove<this.solution.length) {
-           this.comp=fill(this.comp,this.solution[compmove])
+           this.comp=this.fillPlus(this.comp,this.solution[compmove])
         }
         this.movect++
       }
