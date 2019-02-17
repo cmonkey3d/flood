@@ -1,12 +1,15 @@
 <template>
   <div class="hello">
-    <h1>{{ movect }} {{ hint }}</h1>
+    <h1><input type="button" value="<" @click="decmove"/> {{ movect }} <input type="button" value=">" @click="incmove"/> </h1>
     <table>
       <tr>
         <td >
-          <div v-if="movect==0">
+          <div v-if="human.length==1">
             HeadStart
             <multiselect v-model="headStart" :options="headStartOpts"></multiselect>
+          </div>
+          <div v-else>
+            {{hint}}
           </div>
         </td>
         <td>
@@ -17,8 +20,8 @@
         <td style="padding: 20px">
           <table>
             <tr v-for="r in sRange" >
-              <td v-for="c in sRange" v-on:mouseover="showDistMap(r,c)" v-on:click="doClick(r,c)":style="{'background-color':getColor(human,r,c),'width':'20px'}"> 
-                {{getCell(human,r,c)}}
+              <td v-for="c in sRange" v-on:mouseover="showDistMap(r,c)" v-on:click="doClick(r,c)":style="{'background-color':getColor(curHuman(),r,c),'width':'20px'}"> 
+                {{getCell(curHuman(),r,c)}}
               </td>
             </tr>
           </table>
@@ -26,8 +29,8 @@
         <td style="padding: 20px">
           <table>
             <tr v-for="r in sRange" >
-              <td v-for="c in sRange" :style="{'background-color':getColor(comp,r,c),'width':'20px'}"> 
-                {{getCell(comp,r,c)}}
+              <td v-for="c in sRange" :style="{'background-color':getColor(curComp(),r,c),'width':'20px'}"> 
+                {{getCell(curComp(),r,c)}}
               </td>
             </tr>
           </table>
@@ -197,8 +200,8 @@ export default {
     return {
       msg: 'flood',
       sRange,
-      human: {},
-      comp: {} ,
+      human: [],
+      comp: [] ,
       movect: 0,
       dmap:{},
       hint:'',
@@ -210,11 +213,16 @@ export default {
     }
   },
   methods: {
+    curHuman: function() { return this.human[this.movect]},
+    compMove: function() {
+        let compmove=this.movect-this.headStart
+        return Math.max(compmove,0)
+    },
+    curComp: function() { return this.comp[this.compMove()]},
     getCell: function (grid,r,c)  {
       if (!grid || !grid.guts) return '_'
       let loc=[r,c]
-      //if (this.dmap[loc] && grid==this.human) return this.dmap[loc].toString()
-      if (this.dmap[loc] && grid==this.human) return this.dmap[loc].toString(16)
+      if (this.dmap[loc] && grid==this.curHuman()) return this.dmap[loc].toString(16)
       return grid.guts[loc]?'_':grid.brd[loc]
     },
     getColor: function (grid,r,c) {
@@ -235,30 +243,41 @@ export default {
       ret.lastColor=color
       return ret
     },
+    incmove() {
+      if (this.movect<this.human.length-1) this.movect++
+    },
+    decmove() {
+      if (this.movect>0) this.movect--
+    },
+    validClickBoard() {
+      return this.movect==this.human.length
+    },
     doClick(r,c) {
       let loc=[r,c]
-      if (this.human.skin[loc]) {
-        this.human=this.fillPlus(this.human,this.human.brd[loc])
+      if (this.movect+1<this.human.length) return
+      if (this.curHuman().skin[loc]) {
+        //this.human=this.fillPlus(this.human,this.human.brd[loc])
+        this.human.push(this.fillPlus(this.curHuman(),this.curHuman().brd[loc]))
         this.dmap={}
         this.hint=''
         let compmove=this.movect-this.headStart
         if (compmove>=0 && compmove<this.solution.length) {
-           this.comp=this.fillPlus(this.comp,this.solution[compmove])
+           this.comp.push(this.fillPlus(this.curComp(),this.solution[compmove]))
         }
         this.movect++
       }
     },
     showDistMap(r,c) {
       let loc=[r,c]
-      if (this.human.skin) {
-        if (this.human.skin[loc]) {
-          let tb=fill(this.human,this.human.brd[loc])
+      if (this.curHuman().skin) {
+        if (this.curHuman().skin[loc]) {
+          let tb=fill(this.curHuman(),this.curHuman().brd[loc])
           if (this.distMapEnb) {
             this.dmap=distMap(tb)
           }
           let cd=colorDist(tb,this.dmap)
           if (this.totEnb) {
-            this.hint=')'+cd.join('+')+'='+cd.reduce((a,c)=>a+c,0)
+            this.hint=cd.join('+')+'='+cd.reduce((a,c)=>a+c,0)
           } else {
             this.hint=''
           }
@@ -271,9 +290,9 @@ export default {
   },
   mounted() {
     let rb=rBoard()
-    this.comp=initFloodState(rb)
-    this.human=initFloodState(rb)
-    this.solution=solve(this.comp)
+    this.comp.push(initFloodState(rb))
+    this.human.push(initFloodState(rb))
+    this.solution=solve(this.curComp())
     this.movect=0
   }
 }
