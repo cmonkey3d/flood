@@ -1,12 +1,16 @@
 <template>
   <div class="hello">
-    <h1><input type="button" value="<" @click="decmove"/> {{ movect }} <input type="button" value=">" @click="incmove"/> </h1>
+    <h1>Flood!</h1>
+    <h2><input type="button" value="<" @click="decmove"/> {{ movect }} <input type="button" value=">" @click="incmove"/> </h2>
     <table>
       <tr>
         <td >
           <div v-if="human.length==1">
             HeadStart
             <multiselect v-model="headStart" :options="headStartOpts"></multiselect>
+          </div>
+          <div v-else-if="gameOver()">
+            <input type="button" value="PlayAgain" @click="playAgain" />
           </div>
           <div v-else>
             {{hint}}
@@ -214,6 +218,7 @@ export default {
   },
   methods: {
     curHuman: function() { return this.human[this.movect]},
+    gameOver: function() {return this.human.length>0?done(this.curHuman()):false},
     compMove: function() {
         let compmove=this.movect-this.headStart
         return Math.max(compmove,0)
@@ -286,14 +291,19 @@ export default {
           this.hint=''
         }
       }
+    },
+    playAgain() {
+      this.movect=0
+      this.human=[]
+      this.comp=[]
+      let rb=rBoard()
+      this.comp.push(initFloodState(rb))
+      this.human.push(initFloodState(rb))
+      this.solution=solve(this.curComp())
     }
   },
   mounted() {
-    let rb=rBoard()
-    this.comp.push(initFloodState(rb))
-    this.human.push(initFloodState(rb))
-    this.solution=solve(this.curComp())
-    this.movect=0
+    this.playAgain()
   }
 }
 </script>
