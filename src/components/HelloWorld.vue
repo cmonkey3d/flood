@@ -2,6 +2,20 @@
   <div class="hello">
     <h1>Flood!</h1>
     <h2><input type="button" value="<" @click="decmove"/> {{ movect }} <input type="button" value=">" @click="incmove"/> </h2>
+    <div>
+       <input type="button" value="About" @click="toggleAbout" />
+       <div v-if="aboutActive" style="text-align: left;">
+         <p>
+           This game is based on the <a target="_blank" rel="noopener noreferrer" href="https://www.chiark.greenend.org.uk/~sgtatham/puzzles/js/flood.html">flood</a> game from Simon Tatham's portable puzzle collection.<br/><br/>
+           The game is kind of addictive but I am not very good at it.  I wrote this version with more help available in a vain attempt to get better at the game. <br/><br/>
+           The object of the game is to clear the grid on the left before the computer can clear the grid on the right. On each turn you can click any of the colored blocks adjacent to a blank block.  All of the blocks of that color that are connected to a blank block will then turn blank.  (Click around a little bit and it will make sense.)<br/><br/>
+           At the begining of a new game you may select how much of a head start you have on the computer (if any).<br/><br/>
+           If the distmap checkbox is checked the number of moves to blank out each block if that move is made is displayed. <br/><br/>
+           If the totals checkbox is checked the maximum distmap for each color is displayed and totaled (in theory the smaller the total the better. This number is used as a heuristic for the computer player.)<br/><br/>
+           The < and > buttons on either side of the move count allow you to review the moves played by both you and the computer.<br/><br/>
+         </p>
+       </div>
+    </div>
     <table>
       <tr>
         <td >
@@ -45,7 +59,6 @@
 </template>
 
 <script>
-// splice
 const TinyQueue=require('tinyqueue')
 const range=(n,spread=a=>a)=>[...Array(n).keys()].map(spread)
 const side=12
@@ -192,8 +205,6 @@ function clear(b) {
 }
 
 
-// end splice
-
 import Multiselect from 'vue-multiselect'
 
 
@@ -213,7 +224,8 @@ export default {
       headStartOpts:range(6),
       solution:[],
       distMapEnb:false,
-      totEnb:false
+      totEnb:false,
+      aboutActive:false
     }
   },
   methods: {
@@ -300,7 +312,8 @@ export default {
       this.comp.push(initFloodState(rb))
       this.human.push(initFloodState(rb))
       this.solution=solve(this.curComp())
-    }
+    },
+    toggleAbout() {this.aboutActive=!this.aboutActive}
   },
   mounted() {
     this.playAgain()
