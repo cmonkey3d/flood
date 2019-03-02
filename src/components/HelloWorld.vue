@@ -59,7 +59,7 @@
 </template>
 
 <script>
-const TinyQueue=require('tinyqueue')
+import slsl from './slsl.js'
 const range=(n,spread=a=>a)=>[...Array(n).keys()].map(spread)
 const side=12
 const sRange=range(side)
@@ -157,37 +157,41 @@ function distMap(brd) {
 const colorDist=(b,dm=distMap(b))=>colors.map(c=>inside.filter(i=>!b.guts[i] && b.brd[i]==c).reduce((a,c)=>dm[c]>a?dm[c]:a,0))
 
 function solve(fs) {
-    let q=new TinyQueue.default([{fs,moves:[],est:20,cm:colorDist(fs)}],(a,b)=>(a.moves.length+a.est)-(b.moves.length+b.est))
+    const est=t=>t.moves.length+t.est
+    const possible=b=> ((b.moves.length+b.cm.filter(a=>a>0).length+Math.min(...b.cm.filter(a=>a>0))-1)<best.length)
+
+    let idct=0
+    let q=slsl((a,b)=>[est(a)-est(b),Object.keys(b.fs.skin).length-Object.keys(a.fs.skin).length,a.moves.length-b.moves.length,a.id-b.id].find(d=>d!=0))
+    q.push({fs,moves:[],est:20,cm:colorDist(fs),id:++idct})
     let startDist=colorDist(fs,distMap(fs)).reduce((a,c)=>a+=c,0)
     let visited={}
     let best=[]
-    const meval=300
-    let evals=meval
+    let ctdown=500
     while (q.length>0) {
        let b=q.pop()
-       if ((best.length==0) || ((b.moves.length+Math.max(...b.cm,b.cm.filter(a=>a>0).length))<(best.length))) {
+       if ((best.length==0) || possible(b)) {
            for (let m of moves(b.fs)) {
               let fs=fill(b.fs,m)
               if (done(fs)) {
                  best= [...b.moves,m]
-                 console.log('best ',best.length,evals)
-                 evals=300
+                 console.log('best ',best.length,Object.keys(visited).length)
                  continue
               }
               let cs=Object.keys(fs.guts).join(',')
               let cm=colorDist(fs,distMap(fs))
               if (!visited[cs]) {
-                 evals-=1
-                 if ((best.length>0)&&(evals<0))
+                 if ((best.length>0)&&(--ctdown<0))
                     return best
                  visited[cs]=true
-                 q.push( {
+                 let n ={
                     fs,
-                    // add a bonus for closing out a color
-                    est:((20*cm.reduce((a,c)=>a+=c,0))/startDist)-(cm.filter(c=>c==0).length*3),
+                    est:((20*cm.reduce((a,c)=>a+=c,0))/startDist)+(cm.filter(c=>c>0).length),
                     moves:[...b.moves,m],
-                    cm
-                 } )
+                    cm,
+                    id:++idct
+                 } 
+                 if (best.length==0 || possible(n))
+                    q.push(n)
             }
           } 
         }
