@@ -166,7 +166,7 @@ function solve(fs) {
     let startDist=colorDist(fs,distMap(fs)).reduce((a,c)=>a+=c,0)
     let visited={}
     let best=[]
-    let ctdown=500
+    let ctdown=300
     while (q.length>0) {
        let b=q.pop()
        if ((best.length==0) || possible(b)) {
